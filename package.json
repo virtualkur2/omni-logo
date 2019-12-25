@@ -1,0 +1,30 @@
+{
+  "name": "omni-logo",
+  "version": "0.0.1",
+  "description": "Logo Upload for OmniPC",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/virtualkur2/omni-logo.git"
+  },
+  "keywords": [
+    "OmniPC",
+    "Logo",
+    "Multer",
+    "Upload"
+  ],
+  "author": "Mauricio Contreras",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/virtualkur2/omni-logo/issues"
+  },
+  "homepage": "https://github.com/virtualkur2/omni-logo#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.8.3",
+    "multer": "^1.4.2"
+  }
+}
