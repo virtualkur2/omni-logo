@@ -42,6 +42,9 @@ const config = {
     name: 'OmniPC',
     SECRET: process.env.COOKIE_SECRET || '~Y[Q-J/Wo*oZ67"i7b}s4Z&l)`EBr!:)_<utSPrK*X&JCj"1]55,Zs!O:M2vl[b'
   },
+  mongo: {
+    URI: process.env.MONGO_URI || 'mongodb://localhost:27017/omnipc_db'
+  }
 }
 
 module.exports = config;
