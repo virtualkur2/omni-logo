@@ -9,10 +9,22 @@ const config = {
   pass: {
     length: 8,
   },
-  salt: {
-    rounds: 12,
+  pepper: {
     length: 16,
-    chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ|!@#$%&()=?ç[]{}.,;+-*/~_:abcdefghijklmnopqrstuvwxyz0123456789'
+    // don't include '$' sign in pepper's chars string
+    chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ|!@#%&()=?ç[]{}.,;+-*/~_:abcdefghijklmnopqrstuvwxyz0123456789',
+    shuffle: function(str) {
+      // Fisher-Yates shuffle https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+      let arr = str.split('');
+      let len = arr.length;
+      for(let index = len - 1; index > 0; index--) {
+        let shuffled_index = Math.floor(Math.random() * (index + 1));
+        let tmp = arr[index];
+        arr[index] = arr[shuffled_index];
+        arr[shuffled_index] = tmp;
+      }
+      return arr.join('');
+    }
   },
   mail: {
     host: process.env.MAIL_HOST,
