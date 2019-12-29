@@ -28,6 +28,9 @@ const helper = {
   },
   getDBPort: function() {
     return connection.port;
+  },
+  getConnectionState: function() {
+    return { stateCode: connection._readyState, stateName: connection.states[connection._readyState]};
   }
 }
 
