@@ -38,11 +38,13 @@ const config = {
     }
   },
   cookie: {
-    maxAge: 21600000, // milliseconds for 6 hours
-    secure: process.env.NODE_ENV ? true : false,
-    signed: true,
     name: 'OmniPC',
-    SECRET: process.env.COOKIE_SECRET || '~Y[Q-J/Wo*oZ67"i7b}s4Z&l)`EBr!:)_<utSPrK*X&JCj"1]55,Zs!O:M2vl[b'
+    SECRET: process.env.COOKIE_SECRET || '~Y[Q-J/Wo*oZ67"i7b}s4Z&l)`EBr!:)_<utSPrK*X&JCj"1]55,Zs!O:M2vl[b',
+    options: {
+      maxAge: 21600000, // milliseconds for 6 hours
+      secure: process.env.NODE_ENV ? true : false,
+      signed: true,
+    }
   },
   mongo: {
     URI: process.env.MONGO_URI || 'mongodb://localhost:27017/omnipc_db'
