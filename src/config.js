@@ -6,6 +6,7 @@ const config = {
   jwt: {
     SECRET: process.env.JWT_SECRET || '3FDB85062057CBB0110A1B94D2880C535CFD6A8EF6412B7D398F11A743B3B276',
     expTime: 21600000, // milliseconds for 6 hours
+    issuer: 'OmniPC',
   },
   pass: {
     length: 8,
