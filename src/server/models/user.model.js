@@ -8,19 +8,20 @@ const UserSchema = new mongoose.Schema({
   userName: {
     type: String,
     trim: true,
-    required: 'Field \'userName\' is required'
+    required: 'Field \'userName\' is required.',
+    unique: 'This \'userName\' was already taken.'
   },
   email: {
     type: String,
     trim: true,
-    unique: 'This email already exists',
-    match: [emailRegex, 'Please fill in a valid email address'],
-    required: 'Field \'email\' is required',
+    unique: 'This email already exists.',
+    match: [emailRegex, 'Please fill in a valid email address.'],
+    required: 'Field \'email\' is required.',
     index: true
   },
   hashed_password: {
     type: String,
-    required: 'Field \'password\' is required',
+    required: 'Field \'password\' is required.',
     minlength: [config.pass.length, `Password must have at least ${config.pass.length} characters.`]
   },
   pepper: {
