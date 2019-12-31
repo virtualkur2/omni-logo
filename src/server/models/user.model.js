@@ -88,6 +88,15 @@ UserSchema.methods = {
     } catch (e) {
       throw e;
     }
+  },
+  getSafeData: function() {
+    let safeData = {
+      _id: this._id,
+      userName: this.userName,
+      email: this.email,
+      services: this.services
+    };
+    return safeData;
   }
 }
 
