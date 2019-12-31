@@ -35,13 +35,9 @@ const auth = {
         const token = jwt.sign({aud: user._id, exp: tokenExpIn, iss: config.jwt.issuer}, config.jwt.SECRET);
         res.cookie(config.cookie.name, token, config.cookie.options);
         return res.status(200).json({
+          message: `Successfully signed in for account ${user.userName} .`,
+          user: user.getSafeData(),
           token,
-          user: {
-            _id: user._id,
-            name: user.userName,
-            email: user.email,
-            services: user.services,
-          }
         });
       } catch(error) {
         error.httpStatusCode = 500;
