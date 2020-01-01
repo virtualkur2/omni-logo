@@ -2,6 +2,7 @@ const config = {
   env: {
     NODE_ENV: process.env.NODE_ENV || 'development',
     PORT: process.env.PORT || 3000,
+    BASE_URI: process.env.BASE_URI || '/',
   },
   jwt: {
     SECRET: process.env.JWT_SECRET || '3FDB85062057CBB0110A1B94D2880C535CFD6A8EF6412B7D398F11A743B3B276',
