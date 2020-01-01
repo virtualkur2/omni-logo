@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const config = require('../../config');
 
-const auth = {
+const authController = {
   signin: (req, res, next) => {
     // Find user with data provided in req object
     User.findOne({email: req.body.email}, async (error, user) => {
@@ -94,4 +94,4 @@ const getToken = (req) => {
   }
 }
 
-module.exports = auth;
+module.exports = authController;
