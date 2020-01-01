@@ -33,6 +33,7 @@
     "nodemailer": "^6.4.2"
   },
   "devDependencies": {
-    "console-stamp": "^3.0.0-rc3.0"
+    "console-stamp": "^3.0.0-rc3.0",
+    "morgan": "^1.9.1"
   }
 }
