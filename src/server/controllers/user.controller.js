@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const gmailHelper = require('../helpers/gmail.helper');
 
 const userController = {
   create: (req, res, next) => {
