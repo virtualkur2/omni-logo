@@ -1,3 +1,4 @@
+require('dotenv').config();
 const server = require('./server');
 const dbHelper = require('./server/helpers/db.helper');
 const PORT = require('./config').env.PORT;
