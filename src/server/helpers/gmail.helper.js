@@ -16,6 +16,14 @@ const transporter = nodemailer.createTransport({
 });
 
 const gmailHelper = {
+  createTemplate: (activateToken, activationURL) => {
+    return `
+      <h3>Bienvenido a OmniPC Sistemas</h3>
+      <p>Por favor haga clic en el siguiente enlace para activar su cuenta:</p>
+      <a href="${activationURL}?token=${activateToken}">Activar cuenta en OmniPC</a>
+      <p>Gracias por su confianza</p>
+    `;
+  },
   sendMail: mailOptions => new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (error) => {
       if(error) {
