@@ -20,7 +20,7 @@ const gmailHelper = {
     return `
       <h3>Bienvenido a OmniPC Sistemas</h3>
       <p>Por favor haga clic en el siguiente enlace para activar su cuenta:</p>
-      <a href="${activationURL}?token=${activateToken}">Activar cuenta en OmniPC</a>
+      <a href="${activationURL}?token=${activateToken}&activate=true">Activar cuenta en OmniPC</a>
       <p>Gracias por su confianza</p>
     `;
   },
