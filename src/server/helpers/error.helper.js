@@ -1,7 +1,7 @@
 const errorHelper = (error, req, res, next) => {
   const errorName = getErrorName(error);
   const errorMessage = getErrorMessage(error);
-  const httpStatusCode = error.httpStatusCode || 500;
+  const httpStatusCode = error.httpStatusCode || errorName === 'ValidationError' ? 400 : 500;
   return res.status(httpStatusCode).json({
     error: errorName,
     message: errorMessage,
@@ -18,25 +18,18 @@ const getErrorName = (error) => {
 }
 
 const getErrorMessage = (error) => {
-  if(error.errorType && error.errorType === 'MongoError' && error.code && (error.code === 11000 || error.code === 11001)) {
-    return getUniqueErrorMessage(error);
+  console.log(error.keyValue);
+  console.log(typeof error.keyValue);
+
+  if(error.name === 'MongoError' && error.code && (error.code === 11000 || error.code === 11001)) {
+    const keys = Object.keys(error.keyValue);
+    return `User with ${keys[0]}: '${error.keyValue[keys[0]]}' already exists.`
   }
   if(error.errors && Array.isArray(error.errors) && error.errors.length) {
     // first error message only
     return error.errors[0].message;
   }
   return error.message;
-}
-
-const getUniqueErrorMessage = (error) => {
-  let message = 'Document already exists';
-  const start = error.message.lastIndexOf('.$');
-  const end = error.message.lastIndexOf('_1');
-  if(start > 0 && end > start + 2) {
-    let fieldname = error.message.substring(start + 2, end);
-    message = `${fieldname.chartAt(0).toUpperCase()}${fieldname.slice(1)} already exists.`
-  }
-  return message;
 }
 
 module.exports = errorHelper;
