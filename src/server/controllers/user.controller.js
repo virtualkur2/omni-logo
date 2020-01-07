@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const gmailHelper = require('../helpers/gmail.helper');
 
+
 const userController = {
   create: (req, res, next) => {
     const user = new User(req.body);
@@ -12,11 +13,20 @@ const userController = {
         error.httpStatusCode = 500;
         return next(error);
       }
-      // send activation email here
-      return res.status(201).json({
-        message: `User created successfully.`,
-        user: newUser.getSafeData(),
-      });
+      const activateToken = jwt.sign({aud: recipient, exp: tokenExpIn, iss: config.jwt.issuer}, config.jwt.VERIFY_EMAIL_SECRET);
+      const activateURI = config.env.ACTIVATE_EMAIL_URI;
+      gmailHelper.sendMail(user.email, activateToken, activateURI)
+        .then(info => {
+          
+          return res.status(201).json({
+            message: `User created successfully.`,
+            user: newUser.getSafeData(),
+          });
+        })
+        .catch(error => {
+          error.httpStatusCode = 500;
+          return next(error);
+        });
     });
   },
   read: (req, res, next) => {
@@ -101,6 +111,20 @@ const userController = {
       req.profile = users[0];
       next();
     });
+  },
+  activate: (req, res, next) => {
+    const active = req.query.activate === 'true' ? true : false;
+    User.findOneAndUpdate({email: req.auth.aud}, {$set: {active: active}}, {new: true, useFindAndModify: false}, (error, user) => {
+      if(error) {
+        error.httpStatusCode(500);
+        return next(error);
+      }
+      return res.status(201).json({
+        message: `User account for ${req.auth.aud} successfully updated.`,
+        user: user.getSafeData(),
+      });
+    });
+    
   }
 }
 

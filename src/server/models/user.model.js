@@ -54,7 +54,7 @@ UserSchema.virtual('password')
     this._password = password;
     this.pepper.value = this.createPepper();
     this.pepper.pre = Math.round(Math.random()) ? true : false;
-    this.hashed_password = 'Password has been modified, please hash it before save it';
+    this.hashed_password = undefined;
   })
   .get(function() {
     return this._password;
@@ -80,7 +80,10 @@ UserSchema.methods = {
   },
   hashPassword: async function(password) {
     if(!password) {
-      throw new ReferenceError('No \'Password\' provided');
+      return this.invalidate('password', `Field \'password\' is required.`);
+    }
+    if(password && password.length < config.pass.length) {
+      return this.invalidate('password', `Field \'password\' must have at least ${config.pass.length} characters.`);
     }
     try {
       const pepperedPassword = this.pepper.pre ? `${this.pepper.value}${password}` : `${password}${this.pepper.value}`;
@@ -104,10 +107,8 @@ UserSchema.methods = {
 // TODO: Needs attention over this validate middleware
 UserSchema.path('hashed_password').validate(function(value) {
   // Not using value of hashed_password, instead validate virtual password field before saving the hash
-  console.log('Validation over \'hashed_password\' field.');
-  console.log(`value: ${value}`);
-  if(this._password && this._password.length < config.pass.length) {
-    this.invalidate('password', `Field \'password\' must have at least ${config.pass.length} characters.`);
+  if(this.password && this.password.length < config.pass.length) {
+    this.invalidate('password', value);
   }
 }, null);
 

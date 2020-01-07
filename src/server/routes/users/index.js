@@ -1,19 +1,20 @@
+const path = require('path');
 const authController = require('../../controllers/auth.controller');
 const userController = require('../../controllers/user.controller');
 const baseAPIpath = require('../../../config').env.BASE_URI;
 
 const userRoutes = (router) => {
-  router.route(`${baseAPIpath}/users/id/:userId`)
+  router.route(path.join(baseAPIpath,'users/id/:userId'))
     .get(authController.requireSignin, authController.hasAuthorization, userController.read)
     .put(authController.requireSignin, authController.hasAuthorization, userController.update)
     .delete(authController.requireSignin, authController.hasAuthorization, userController.remove);
 
-  router.route(`${baseAPIpath}/users/email/:userEmail`)
+  router.route(path.join(baseAPIpath,'users/email/:userEmail'))
     .get(authController.requireSignin, authController.hasAuthorization, userController.read)
     .put(authController.requireSignin, authController.hasAuthorization, userController.update)
     .delete(authController.requireSignin, authController.hasAuthorization, userController.remove);
 
-  router.route(`${baseAPIpath}/users`)
+  router.route(path.join(baseAPIpath, 'users'))
     .post(userController.create);
   
   router.param('userId', userController.userById);

@@ -3,11 +3,14 @@ const config = {
     NODE_ENV: process.env.NODE_ENV || 'development',
     PORT: process.env.PORT || 3000,
     BASE_URI: process.env.BASE_URI || '/',
+    ACTIVATE_EMAIL_URI: process.env.ACTIVATE_EMAIL_URI || 'https://omnipc.ddns.net/api/activate',
   },
   jwt: {
     SECRET: process.env.JWT_SECRET || '3FDB85062057CBB0110A1B94D2880C535CFD6A8EF6412B7D398F11A743B3B276',
     expTime: 21600000, // milliseconds for 6 hours
     issuer: 'OmniPC',
+    VERIFY_EMAIL_SECRET: process.env.JWT_SECRET || '29886D5CA2269F7B3D03801393626951EBCD2C2E899A277A6CBF437CE61F35DA',
+    emailVerifyExpTime: 1800000, // milliseconds for 30 minutes
   },
   pass: {
     length: 8,

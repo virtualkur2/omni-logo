@@ -61,7 +61,7 @@ const authController = {
     }
     jwt.verify(token, config.jwt.SECRET, {audience: req.profile._id, issuer: config.jwt.issuer, maxAge: config.jwt.expTime/1000}, (error, decoded) => {
       if(error) {
-        error.httpStatusCode = 500;
+        error.httpStatusCode = 403; // Auth error
         return next(error);
       }
       req.auth = decoded;
@@ -77,6 +77,43 @@ const authController = {
       return next(error);
     }
     next();
+  },
+  verifyEmail: (req, res, next) => {
+    const token = getToken(req);
+    // TODO: next lines are very repetitive, please create an Error Class
+    if(!token) {
+      // Token not present in request, send API Error message (Do I need send a template instead?)
+      const error = new Error(`No token provided in request, please do login or contact administrator.`);
+      error.name = 'AuthorizeError';
+      error.httpStatusCode = 403;
+      return next(error);
+    }
+    const email = req.query.email;
+    if(!email) {
+      // Email not present in request, send API Error message (Do I need send a template instead?)
+      const error = new Error(`No email provided in request, please do login or contact administrator.`);
+      error.name = 'AuthorizeError';
+      error.httpStatusCode = 403;
+      return next(error);
+    }
+    const activate = req.query.activate;
+    if(!activate || !(activate === 'true' || activate === 'false')) {
+      // Missing action or invalid action in request, send API Error message (Do I need send a template instead?)
+      const error = new Error(`No action provided in request or invalid action, please contact an administrator.`);
+      error.name = 'AuthorizeError';
+      error.httpStatusCode = 403;
+      return next(error);
+    }
+    //check token
+    jwt.verify(token, config.jwt.VERIFY_EMAIL_SECRET, {audience: email, issuer: config.jwt.issuer, maxAge: config.jwt.emailVerifyExpTime/1000}, (error, decoded) => {
+      //TODO: if token is not valid, display send new token page using Captcha
+      if(error) {
+        error.httpStatusCode = 403; //Auth Error
+        return next(error);
+      }
+      req.auth = decoded;
+      next();
+    });
   }
 }
 
