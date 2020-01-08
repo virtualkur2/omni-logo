@@ -15,6 +15,7 @@ const userRoutes = (router) => {
     .delete(authController.requireSignin, authController.hasAuthorization, userController.remove);
 
   router.route(path.join(baseAPIpath, 'users'))
+    .get(authController.devRead, userController.devRead)
     .post(userController.create);
   
   router.param('userId', userController.userById);

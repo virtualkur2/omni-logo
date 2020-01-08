@@ -12,13 +12,21 @@ oauth2Client.setCredentials({
 });
 
 const getToken = async () => {
-  const result = await oauth2Client.getAccessToken();
-  const token = result.token;
-  const data = result.res.data;
-  if(process.env.GMAIL_OAUTH_REFRESH_TOKEN !== data.refresh_token) {
-    process.env.GMAIL_OAUTH_REFRESH_TOKEN = data.refresh_token;
+  try {
+    const result = await oauth2Client.getAccessToken();
+    const token = result.token;
+    if(result.res && result.res.data) {
+      if(process.env.GMAIL_OAUTH_REFRESH_TOKEN !== result.res.data.refresh_token) {
+        process.env.GMAIL_OAUTH_REFRESH_TOKEN = result.res.data.refresh_token;
+      }
+      process.env.GMAIL_OAUTH_TOKEN_EXPIRY_DATE = result.res.data.expiry_date;
+    }
+    const expiry_date = process.env.GMAIL_OAUTH_TOKEN_EXPIRY_DATE;
+    return { token, expiry_date};
+  } catch (error) {
+    console.error(error.message);
+    throw error;
   }
-  return { token, data};
 }
 
 const createTemplate = (activationRecipient, activateToken, activationURI) => {
@@ -50,7 +58,7 @@ const gmailHelper = {
           clientSecret: process.env.GMAIL_OAUTH_CLIENT_SECRET,
           refreshToken: process.env.GMAIL_OAUTH_REFRESH_TOKEN,
           accessToken: result.token,
-          expires: result.data.expiry_date
+          expires: result.expiry_date
         }
       });
       const mailOptions = {

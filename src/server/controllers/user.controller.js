@@ -1,6 +1,7 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const gmailHelper = require('../helpers/gmail.helper');
-
+const config = require('../../config');
 
 const userController = {
   create: (req, res, next) => {
@@ -13,11 +14,12 @@ const userController = {
         error.httpStatusCode = 500;
         return next(error);
       }
-      const activateToken = jwt.sign({aud: recipient, exp: tokenExpIn, iss: config.jwt.issuer}, config.jwt.VERIFY_EMAIL_SECRET);
+      const tokenExpIn = Math.floor((Date.now() + config.jwt.emailVerifyExpTime)/1000);
+      const activateToken = jwt.sign({aud: user.email, exp: tokenExpIn, iss: config.jwt.issuer}, config.jwt.VERIFY_EMAIL_SECRET);
       const activateURI = config.env.ACTIVATE_EMAIL_URI;
       gmailHelper.sendMail(user.email, activateToken, activateURI)
         .then(info => {
-          
+          console.info(info);
           return res.status(201).json({
             message: `User created successfully.`,
             user: newUser.getSafeData(),
@@ -125,6 +127,16 @@ const userController = {
       });
     });
     
+  },
+  devRead: (req, res, next) => {
+    User.find({}, (error, results) => {
+      if(error) {
+        error.httpStatusCode = 500;
+        return next(error);
+      }
+      console.info('Development read of documents in Users collection.');
+      return res.status(200).json(results);
+    });
   }
 }
 

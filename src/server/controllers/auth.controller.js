@@ -1,41 +1,48 @@
 const jwt = require('jsonwebtoken');
-
 const User = require('../models/user.model');
 const config = require('../../config');
+
+const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const authController = {
   signin: (req, res, next) => {
     // Find user with data provided in req object
-    User.findOne({email: req.body.email}, async (error, user) => {
+    const query = {};
+    if(emailRegex.test(req.body.user)) {
+      query.email = req.body.user;
+    } else {
+      query.userName = req.body.user;
+    }
+    User.findOne(query, async (error, user) => {
       if(error) {
         error.httpStatusCode = 500; // Internal Server Error
         return next(error);
       }
       if(!user) {
-        let error = new Error(`User account for ${req.body.email}, was not found.`);
+        let error = new Error(`User account for '${req.body.user}', was not found.`);
         error.name = 'NotFoundError';
         error.httpStatusCode = 404; // Not found
         return next(error);
       }
       try {
         const _user = await user.authenticate(req.body.password);
-        if(!_user.isAuhtenticated) {
-          let error = new Error(`User and password don't match.`);
+        if(!_user.isAuthenticated) {
+          let error = new Error('User and password don\'t match.');
           error.name = 'AuthenticateError';
           error.httpStatusCode = 401; // Unauthorized
           return next(error);
         }
         if(!_user.isActive) {
-          let error = new Error(`Inactive user. Contact an administrator`);
-          error.name = `AuthorizeError`;
-          error.httpStatusCode = 403; // Forbiden
+          let error = new Error('Inactive user. Contact an administrator');
+          error.name = 'AuthorizeError';
+          error.httpStatusCode = 403; // Forbidden
           return next(error);
         }
         const tokenExpIn = Math.floor((Date.now() + config.jwt.expTime)/1000);
         const token = jwt.sign({aud: user._id, exp: tokenExpIn, iss: config.jwt.issuer}, config.jwt.SECRET);
         res.cookie(config.cookie.name, token, config.cookie.options);
         return res.status(200).json({
-          message: `Successfully signed in for account ${user.userName} .`,
+          message: `Successfully signed in for account '${req.body.user}'.`,
           user: user.getSafeData(),
           token,
         });
@@ -56,12 +63,12 @@ const authController = {
     if(!token) {
       const error = new Error(`Missing credentials, please do login.`);
       error.name = 'AuthorizeError';
-      error.httpStatusCode = 403;
+      error.httpStatusCode = 403; // Forbidden
       return next(error);
     }
     jwt.verify(token, config.jwt.SECRET, {audience: req.profile._id, issuer: config.jwt.issuer, maxAge: config.jwt.expTime/1000}, (error, decoded) => {
       if(error) {
-        error.httpStatusCode = 403; // Auth error
+        error.httpStatusCode = 403; // Forbidden
         return next(error);
       }
       req.auth = decoded;
@@ -73,7 +80,7 @@ const authController = {
     if(!authorized) {
       const error = new Error(`User ${req.profile.userName} not authorized.`);
       error.name = 'AuthorizeError';
-      error.httpStatusCode = 403;
+      error.httpStatusCode = 403; // Forbidden
       return next(error);
     }
     next();
@@ -83,17 +90,17 @@ const authController = {
     // TODO: next lines are very repetitive, please create an Error Class
     if(!token) {
       // Token not present in request, send API Error message (Do I need send a template instead?)
-      const error = new Error(`No token provided in request, please do login or contact administrator.`);
+      const error = new Error(`No token provided in request, please contact an administrator.`);
       error.name = 'AuthorizeError';
-      error.httpStatusCode = 403;
+      error.httpStatusCode = 403; // Forbidden
       return next(error);
     }
     const email = req.query.email;
     if(!email) {
       // Email not present in request, send API Error message (Do I need send a template instead?)
-      const error = new Error(`No email provided in request, please do login or contact administrator.`);
+      const error = new Error(`No email provided in request, please contact an administrator.`);
       error.name = 'AuthorizeError';
-      error.httpStatusCode = 403;
+      error.httpStatusCode = 403; // Forbidden
       return next(error);
     }
     const activate = req.query.activate;
@@ -101,19 +108,28 @@ const authController = {
       // Missing action or invalid action in request, send API Error message (Do I need send a template instead?)
       const error = new Error(`No action provided in request or invalid action, please contact an administrator.`);
       error.name = 'AuthorizeError';
-      error.httpStatusCode = 403;
+      error.httpStatusCode = 403; // Forbidden
       return next(error);
     }
     //check token
     jwt.verify(token, config.jwt.VERIFY_EMAIL_SECRET, {audience: email, issuer: config.jwt.issuer, maxAge: config.jwt.emailVerifyExpTime/1000}, (error, decoded) => {
       //TODO: if token is not valid, display send new token page using Captcha
       if(error) {
-        error.httpStatusCode = 403; //Auth Error
+        error.httpStatusCode = 403; // Forbidden
         return next(error);
       }
       req.auth = decoded;
       next();
     });
+  },
+  devRead: (req, res, next) => {
+    if(!req.query.dev || !(req.query.dev === 'true')) {
+      const error = new Error('A parameter is missing, please try again.');
+      error.name = 'AuthorizeError';
+      error.httpStatusCode = 403; // Forbidden
+      return next(error);
+    }
+    next();
   }
 }
 

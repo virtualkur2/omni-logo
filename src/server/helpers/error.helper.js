@@ -1,7 +1,7 @@
 const errorHelper = (error, req, res, next) => {
   const errorName = getErrorName(error);
   const errorMessage = getErrorMessage(error);
-  const httpStatusCode = error.httpStatusCode || errorName === 'ValidationError' ? 400 : 500;
+  const httpStatusCode = error.httpStatusCode || (errorName === 'ValidationError' ? 400 : 500);
   return res.status(httpStatusCode).json({
     error: errorName,
     message: errorMessage,
