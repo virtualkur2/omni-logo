@@ -52,7 +52,7 @@ const UserSchema = new mongoose.Schema({
 UserSchema.virtual('password')
   .set(function(password) {
     this._password = password;
-    this.pepper.value = this.createPepper();
+    this.pepper.value = hashHelper.createPepper();
     this.pepper.pre = Math.round(Math.random()) ? true : false;
     this.hashed_password = undefined;
   })
@@ -61,14 +61,6 @@ UserSchema.virtual('password')
   });
 
 UserSchema.methods = {
-  createPepper: function() {
-    const chars = config.pepper.shuffle(config.pepper.chars);
-    let pepper = [];
-    for(let i = 0; i < config.pepper.length; i++) {
-      pepper.push(chars[ Math.round(Math.random() * (chars.length - 1)) ]);
-    }
-    return pepper.join('');
-  },
   authenticate: async function(password) {
     try {
       const password_attempt = this.pepper.pre ? `${this.pepper.value}${password}` : `${password}${this.pepper.value}`;

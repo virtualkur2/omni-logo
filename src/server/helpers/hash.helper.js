@@ -9,6 +9,23 @@ const options = {
   parallelization: 2,       // Default: 1 (p)
   maxmem: 256 * 1024 * 1024  //Default: 32 *1024 *1024
 }
+const pepperOptions = {
+  length: 16,
+  // don't include '$' sign in pepper's chars string
+  chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ|!@#%&()=?ç[]{}.,;+-*/~_:abcdefghijklmnopqrstuvwxyz0123456789',
+  shuffle: function(str) {
+    // Fisher-Yates shuffle https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+    let arr = str.split('');
+    let len = arr.length;
+    for(let index = len - 1; index > 0; index--) {
+      let shuffled_index = Math.floor(Math.random() * (index + 1));
+      let tmp = arr[index];
+      arr[index] = arr[shuffled_index];
+      arr[shuffled_index] = tmp;
+    }
+    return arr.join('');
+  }
+};
 
 const typeError = new TypeError('Invalid argument');
 
@@ -93,6 +110,14 @@ const helper = {
     } else {
       throw typeError;
     }
+  },
+  createPepper: function() {
+    const chars = pepperOptions.shuffle(pepperOptions.chars);
+    let pepper = [];
+    for(let i = 0; i < pepperOptions.length; i++) {
+      pepper.push(chars[ Math.round(Math.random() * (chars.length - 1)) ]);
+    }
+    return pepper.join('');
   }
 }
 
