@@ -18,8 +18,8 @@ const getErrorName = (error) => {
 }
 
 const getErrorMessage = (error) => {
-  console.log(error.keyValue);
-  console.log(typeof error.keyValue);
+  // console.log(error.keyValue);
+  // console.log(typeof error.keyValue);
 
   if(error.name === 'MongoError' && error.code && (error.code === 11000 || error.code === 11001)) {
     const keys = Object.keys(error.keyValue);

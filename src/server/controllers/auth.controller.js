@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const config = require('../../config');
+const cookieParser = require('cookie-parser');
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -41,6 +42,8 @@ const authController = {
         const tokenExpIn = Math.floor((Date.now() + config.jwt.expTime)/1000);
         const token = jwt.sign({aud: user._id, exp: tokenExpIn, iss: config.jwt.issuer}, config.jwt.SECRET);
         res.cookie(config.cookie.name, token, config.cookie.options);
+        console.log('Sign in res.cookie:');
+        console.log(res.cookie);
         return res.status(200).json({
           message: `Successfully signed in for account '${req.body.user}'.`,
           user: user.getSafeData(),
@@ -134,14 +137,23 @@ const authController = {
 }
 
 const getToken = (req) => {
-  console.log('Signed cookies:');
   console.log(req.signedCookies);
+  console.log(req.cookies);
   if(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
     return req.headers.authorization.split(' ')[1];
   } else if(req.query && req.query.token) {
     return req.query.token;
-  } else if(req.signedCookies && req.signedCookies.name === config.cookie.name) {
-    return req.signedCookies.token;
+  } else if(req.signedCookies) {
+    let token = undefined;
+    Object.keys(req.signedCookies).forEach(cookieName => {
+      console.log(cookieName);
+      console.log(config.cookie.name);
+      if(cookieName === config.cookie.name) {
+        token = req.signedCookies[config.cookie.name];
+      }
+    });
+    console.log('token: ', token);
+    return token;
   } else {
     return;
   }
