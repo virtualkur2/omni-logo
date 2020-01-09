@@ -2,9 +2,32 @@ require('dotenv').config();
 const server = require('./server');
 const dbHelper = require('./server/helpers/db.helper');
 const PORT = require('./config').env.PORT;
+const NODE_ENV = require('./config').env.NODE_ENV;
 
 // Console Stamp basic
 require('console-stamp')(console);
+
+// For chokidar-------------------------------------
+// if(NODE_ENV !== 'production') {
+//   const path2watch = './src/server';
+//   const chokidar = require('chokidar');
+//   const watcher = chokidar.watch(path2watch);
+  
+//   watcher.on('ready', () => {
+//     console.log('Initial scan complete, waiting for changes.');
+//     watcher.on('all', (event, path) => {
+//       console.log(`Event: ${event} at ${path}`);
+//       console.log(`Clearing ${path2watch} module cache from app...`);
+//       Object.keys(require.cache).forEach(id => {
+//         if(/[\/\\]server[\/\\]/.test(id)) {
+//           console.log('About to delete from cache: ', id);
+//           delete require.cache[id];
+//         }
+//       });
+//     });
+//   });
+// }
+// --------------------------------------------------
 
 console.log('Starting app...');
 const app = server();
