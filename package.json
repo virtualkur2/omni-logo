@@ -38,6 +38,7 @@
     "console-stamp": "^3.0.0-rc3.0",
     "dotenv": "^8.2.0",
     "mocha": "^7.0.0",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "nodemon": "^2.0.2"
   }
 }
