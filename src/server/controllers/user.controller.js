@@ -122,7 +122,7 @@ const userController = {
         return next(error);
       }
       return res.status(201).json({
-        message: `User account for ${req.auth.aud} successfully updated.`,
+        message: `User account for ${user.userName} successfully updated.`,
         user: user.getSafeData(),
       });
     });
