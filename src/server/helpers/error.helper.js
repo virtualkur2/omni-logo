@@ -1,7 +1,13 @@
 const errorHelper = (error, req, res, next) => {
   const errorName = getErrorName(error);
   const errorMessage = getErrorMessage(error);
-  const httpStatusCode = error.httpStatusCode || (errorName === 'ValidationError' ? 400 : 500);
+  const httpStatusCode = errorName === 'ValidationError' ? 400 : (error.httpStatusCode ? error.httpStatusCode : 500);
+  console.error('An error ocurred in:');
+  console.info(getErrorCallee(error));
+  console.info(`errorName: ${errorName}.`);
+  console.info(`Message: ${errorMessage}.`);
+  console.info(`httpStatusCode: ${httpStatusCode}.`);
+  console.error('---------------------------------------------');
   return res.status(httpStatusCode).json({
     error: errorName,
     message: errorMessage,
@@ -30,6 +36,12 @@ const getErrorMessage = (error) => {
     return error.errors[0].message;
   }
   return error.message;
+}
+
+getErrorCallee = (error) => {
+  const caller_line = error.stack.split("\n")[4];
+  const start = caller_line.indexOf("at ");
+  return caller_line.slice(start + 2, caller_line.length);
 }
 
 module.exports = errorHelper;
