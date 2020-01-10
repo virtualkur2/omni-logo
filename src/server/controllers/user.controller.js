@@ -116,7 +116,7 @@ const userController = {
   },
   activate: (req, res, next) => {
     const active = req.query.activate === 'true' ? true : false;
-    User.findByIdAndUpdate(req.auth._id, {$set: {active: active}}, {new: true}, (error, user) => {
+    User.findByIdAndUpdate(req.auth._id, {$set: {active: active}}, {new: true, useFindAndModify: false}, (error, user) => {
       if(error) {
         error.httpStatusCode(500);
         return next(error);

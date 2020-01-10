@@ -66,7 +66,7 @@ const authController = {
       error.httpStatusCode = 403; // Forbidden
       return next(error);
     }
-    jwt.verify(token, config.jwt.SECRET, {audience: config.jwt.audience, issuer: config.jwt.issuer, maxAge: config.jwt.expTime/1000}, (error, decoded) => {
+    jwt.verify(token, config.jwt.SECRET, {audience: config.jwt.audience, issuer: config.jwt.issuer, maxAge: config.jwt.expTime / 1000}, (error, decoded) => {
       if(error) {
         error.httpStatusCode = 403; // Forbidden
         return next(error);
