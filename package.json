@@ -39,6 +39,7 @@
     "dotenv": "^8.2.0",
     "mocha": "^7.0.0",
     "morgan": "^1.9.1",
+    "node-mocks-http": "^1.8.1",
     "nodemon": "^2.0.2"
   }
 }
