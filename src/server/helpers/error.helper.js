@@ -4,9 +4,9 @@ const errorHelper = (error, req, res, next) => {
   const httpStatusCode = errorName === 'ValidationError' ? 400 : (error.httpStatusCode ? error.httpStatusCode : 500);
   console.error('An error ocurred in:');
   console.info(getErrorCallee(error));
-  console.info(`errorName: ${errorName}.`);
-  console.info(`Message: ${errorMessage}.`);
-  console.info(`httpStatusCode: ${httpStatusCode}.`);
+  console.info(`errorName: ${errorName}`);
+  console.info(`Message: ${errorMessage}`);
+  console.info(`httpStatusCode: ${httpStatusCode}`);
   console.error('---------------------------------------------');
   return res.status(httpStatusCode).json({
     error: errorName,
