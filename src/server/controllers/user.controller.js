@@ -15,7 +15,7 @@ const userController = {
         return next(error);
       }
       const tokenExpIn = Math.floor((Date.now() + config.jwt.emailVerifyExpTime)/1000);
-      const activateToken = jwt.sign({aud: user.email, exp: tokenExpIn, iss: config.jwt.issuer}, config.jwt.VERIFY_EMAIL_SECRET);
+      const activateToken = jwt.sign({_id: user._id, aud: config.jwt.audience, iss: config.jwt.issuer, exp: tokenExpIn,}, config.jwt.VERIFY_EMAIL_SECRET);
       const activateURI = config.env.ACTIVATE_EMAIL_URI;
       gmailHelper.sendMail(user.email, activateToken, activateURI)
         .then(info => {
