@@ -56,6 +56,18 @@ const config = {
   },
   paths: {
     public: '/public'
+  },
+  serveStatic: {
+    options: {
+      dotfiles: 'deny',
+      etag: true,
+      fallthrough: true,
+      immutable: false, // <- review this setting in detail
+      index: false,
+      lastModified: true,
+      maxAge: 0, // <- review this setting in detail
+      redirect: true,
+    }
   }
 }
 

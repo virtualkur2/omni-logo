@@ -2,7 +2,10 @@ require('dotenv').config();
 const server = require('./server');
 const dbHelper = require('./server/helpers/db.helper');
 const PORT = require('./config').env.PORT;
-const NODE_ENV = require('./config').env.NODE_ENV;
+const path = require('path');
+const staticPath = require('./config').paths.public;
+
+// const NODE_ENV = require('./config').env.NODE_ENV;
 
 // Console Stamp basic
 require('console-stamp')(console);
@@ -39,6 +42,7 @@ dbHelper.connect()
         return console.error(`Server could not be initialized: ${err.message}`);
       }
       console.info(`Server mounted at: ${__dirname}`);
+      console.info(`Static files served from: ${path.join(__dirname, staticPath)}`);
       console.info(`Server started and listening on port: ${PORT}.`);
     });
   })
