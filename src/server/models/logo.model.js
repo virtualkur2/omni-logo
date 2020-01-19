@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const LogoSchema = new mongoose.Schema({
   path: {
     type: String,
-    required: '\'path\' field is required.'
+    required: `Field 'path' is required.`
   },
   by: {
     type: mongoose.Schema.Types.ObjectId,
@@ -11,7 +11,15 @@ const LogoSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    default: `OmniPC Logo Contest - ${Date.now()}`
+    required: `Field 'title' is required.`
+  },
+  originalName: {
+    type: String,
+    required: `Field 'originalName' is required.`
+  },
+  readOnly: {
+    type: Boolean,
+    default: false
   }
 }, {timestamps: {createdAt: 'created', updatedAt: 'updated'}});
 
