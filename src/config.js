@@ -53,6 +53,9 @@ const config = {
   },
   mongo: {
     URI: process.env.MONGO_URI || 'mongodb://localhost:27017/omnipc_db'
+  },
+  paths: {
+    public: '/public'
   }
 }
 
