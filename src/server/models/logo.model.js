@@ -43,4 +43,21 @@ const LogoSchema = new mongoose.Schema({
   }
 }, {timestamps: {createdAt: 'created', updatedAt: 'updated'}});
 
+LogoSchema.methods = {
+  getSafeData: function() {
+    let safeData = {
+      _id: this._id,
+      title: this.title,
+      by: this.by,
+      file: {
+        encoding: this.file.encoding,
+        mimetype: this.file.mimetype,
+        size: this.file.size,
+        filename: this.file.filename
+      }
+    };
+    return safeData;
+  }
+}
+
 module.exports = mongoose.model('Logo', LogoSchema);
