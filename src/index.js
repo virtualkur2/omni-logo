@@ -38,6 +38,7 @@ dbHelper.connect()
       if(err) {
         return console.error(`Server could not be initialized: ${err.message}`);
       }
+      console.info(`Server mounted at: ${__dirname}`);
       console.info(`Server started and listening on port: ${PORT}.`);
     });
   })
