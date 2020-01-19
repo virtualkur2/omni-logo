@@ -1,9 +1,33 @@
 const mongoose = require('mongoose');
 
 const LogoSchema = new mongoose.Schema({
-  path: {
-    type: String,
-    required: `Field 'path' is required.`
+  file: {
+    fieldname: {
+      type: String,
+    },
+    originalname: {
+      type: String,
+      required: `Field 'originalName' is required.`
+    },
+    encoding: {
+      type: String,
+    },
+    mimetype: {
+      type: String,
+    },
+    size: {
+      type: String,
+    },
+    destination: {
+      type: String,
+    },
+    filename: {
+      type: String,
+      required: `Field 'filename' is required.`
+    },
+    path: {
+      type: String,
+    }
   },
   by: {
     type: mongoose.Schema.Types.ObjectId,
@@ -12,10 +36,6 @@ const LogoSchema = new mongoose.Schema({
   title: {
     type: String,
     required: `Field 'title' is required.`
-  },
-  originalName: {
-    type: String,
-    required: `Field 'originalName' is required.`
   },
   readOnly: {
     type: Boolean,
