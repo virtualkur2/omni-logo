@@ -4,6 +4,10 @@ const path = require('path');
 const fs = require('fs');
 
 const fileNameLength = 32;
+const maxFileSize = 10 * 1000 * 1000; // this is for bytes
+const limits = {
+  fileSize: maxFileSize
+}
 
 const randomFileName = (length) => {
   return [...Array(length)].map((element) => (~~(Math.random()*36)).toString(36)).join('');
@@ -20,7 +24,7 @@ const fileUploadHelper = {
         cb(null, filename);
       }
     });
-    return multer({storage, fileFilter});
+    return multer({storage, fileFilter, limits});
   },
   unlinkFile: (filePath, fileName, cb) => {
     //check for callback otherwise return a Promise
