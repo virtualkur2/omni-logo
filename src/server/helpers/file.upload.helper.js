@@ -23,22 +23,40 @@ const fileUploadHelper = {
     return multer({storage, fileFilter});
   },
   unlinkFile: (filePath, fileName, cb) => {
-    if(!(cb instanceof Function)) {
-      const typeError = new TypeError('Invalid callback argument, expected a Function.');
-      cb(typeError, null);
-    }
+    //check for callback otherwise return a Promise
     const fullPath = path.join(filePath, fileName);
-    fs.stat(fullPath, (error, stats) => {
-      if(error) return cb(error, null);
-      if(!stats.isFile()) return cb(new TypeError(`There's no such file: ${fileName}`), null);
-      fs.unlink(fullPath, (error) => {
-        if(error) {
-          error.fullPath = fullPath;
-          return cb(error, null);
-        }
-        return cb(null, true);
+    if(cb) {
+      if(!(cb instanceof Function)) {
+      }
+      fs.stat(fullPath, (error, stats) => {
+        if(error) return cb(error, null);
+        if(!stats.isFile()) return cb(new TypeError(`There's no such file: ${fileName}`), null);
+        fs.unlink(fullPath, error => {
+          if(error) {
+            error.fullPath = fullPath;
+            return cb(error, null);
+          }
+          return cb(null, fileName);
+        });
       });
-    })
+    } else { // a Promise is returned
+      return new Promise((resolve, reject) => {
+        fs.stat(fullPath, (error, stats) => {
+          if(error) {
+            error.fullPath = fullPath;
+            return reject(error);
+          }
+          if(!stats.isFile()) return reject(new TypeError(`There's no such file: ${fileName}`));
+          fs.unlink(fullPath, error => {
+            if(error) {
+              error.fullPath = fullPath;
+              return reject(error);
+            }
+            return resolve(fileName);
+          });
+        });
+      });
+    }
   }
 }
 
