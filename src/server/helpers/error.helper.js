@@ -1,7 +1,17 @@
 const errorHelper = (error, req, res, next) => {
   const errorName = getErrorName(error);
   const errorMessage = getErrorMessage(error);
-  const httpStatusCode = errorName === 'ValidationError' ? 400 : (error.httpStatusCode ? error.httpStatusCode : 500);
+  let httpStatusCode;
+  switch(errorName) {
+    case 'ValidationError':
+      httpStatusCode = 400;
+      break;
+    case 'CastError':
+      httpStatusCode = 400;
+      break;
+    default:
+      httpStatusCode = error.httpStatusCode ? error.httpStatusCode : 500;
+  }
   console.error('An error ocurred in:');
   console.info(getErrorCallee(error));
   console.info(`errorName: ${errorName}`);
