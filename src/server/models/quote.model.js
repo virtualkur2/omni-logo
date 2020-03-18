@@ -1,12 +1,7 @@
-const dbHelper = require('../server/helpers/db.helper');
 const mongoose = require('mongoose');
 
 const QuoteSchema = new mongoose.Schema({
-  quote_en: {
-    type: String,
-    required: true
-  },
-  quote_es: {
+  quote: {
     type: String,
     required: true
   },
@@ -14,5 +9,8 @@ const QuoteSchema = new mongoose.Schema({
     type: String,
     required: true
   }
-});
+}, {timestamps: {createdAt: 'created', updatedAt: 'updated'}});
 
+const Quote = mongoose.model('Quote', QuoteSchema);
+
+module.exports = Quote;

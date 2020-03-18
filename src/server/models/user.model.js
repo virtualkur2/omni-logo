@@ -40,6 +40,9 @@ const UserSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: false
+  },
+  avatar: {
+    type: String,
   }
 }, {timestamps: {createdAt: 'created', updatedAt: 'updated'}});
 
@@ -89,7 +92,8 @@ UserSchema.methods = {
       _id: this._id,
       userName: this.userName,
       email: this.email,
-      services: this.services
+      services: this.services,
+      avatar: this.avatar,
     };
     return safeData;
   }

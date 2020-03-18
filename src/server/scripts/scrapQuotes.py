@@ -3,6 +3,7 @@ import requests
 import re
 import json
 import random
+import json
 
 
 index_list = []
@@ -18,10 +19,12 @@ category_dir = {
 
 page_list = [] 
 
-quotes_list = []
+response = {
+	"quotes": []
+}
 
 def index():
-	index_url = 'https://www.brainyquote.com/topics'
+	index_url = "https://www.brainyquote.com/topics"
 	html = requests.get(index_url)
 	soup = BeautifulSoup(html.text, "html.parser")
 	index = soup.find_all('a', {"href": re.compile("/topic_index/")})
@@ -59,17 +62,17 @@ def quotes(category):
 	url = "http://www.brainyquote.com" + category
 	html = requests.get(url)
 	soup = BeautifulSoup(html.text, "html.parser")
-	divs =  soup.find_all('div', class_='clearfix')
+	divs =  soup.find_all("div", class_="clearfix")
 	quotes_list = []
 	for elements in divs:
-		quote_anchor = elements.find_all('a', {"href": re.compile("/quotes/")})
-		author_anchor = elements.find_all('a', {"href": re.compile("/authors/")})
+		quote_anchor = elements.find_all("a", {"href": re.compile("/quotes/")})
+		author_anchor = elements.find_all("a", {"href": re.compile("/authors/")})
 		quotes_json = {}
 		for quote in quote_anchor:
-			quotes_json['quote'] = quote.text
+			quotes_json["quote"] = quote.text
 			# print(quote.text)
 		for author in author_anchor:
-			quotes_json['author'] = author.text
+			quotes_json["author"] = author.text
 			# print(author.text)
 		quotes_list.append(quotes_json)
 		# print(quote.descendants)
@@ -79,6 +82,16 @@ def quotes(category):
 
 # index()
 # categories()
-IT_category = '/topics/information-technology-quotes'
-Computer_category = '/topics/computers-quotes'
-print(quotes(Computer_category))
+IT_category = "/topics/information-technology-quotes"
+Computer_category = "/topics/computers-quotes"
+
+itQuotes = quotes(IT_category)
+pcQuotes = quotes(Computer_category)
+
+for quote in itQuotes:
+	response['quotes'].append(quote)
+
+for quote in pcQuotes:
+	response['quotes'].append(quote)
+
+print(json.dumps(response))
