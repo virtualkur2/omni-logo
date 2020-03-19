@@ -39,7 +39,7 @@ const createTemplate = (activationRecipient, activateToken, activationURI) => {
 }
 
 const gmailHelper = {
-  sendMail: (recipient, activateToken, activateURI) => new Promise((resolve, reject) => {
+  sendActivationMail: (recipient, activateToken, activateURI) => new Promise((resolve, reject) => {
     if(!recipient || !activateToken || !activateURI) {
       const error = new Error(`${!recipient ? 'Recipient' : (!activateToken ? 'Activate Token' : 'Activate URI')} required.`);
       error.name = 'ActivateEmailError';
