@@ -39,9 +39,9 @@ const createTemplate = (activationRecipient, activateToken, activationURI) => {
 }
 
 const gmailHelper = {
-  sendActivationMail: (recipient, activateToken, activateURI) => new Promise((resolve, reject) => {
-    if(!recipient || !activateToken || !activateURI) {
-      const error = new Error(`${!recipient ? 'Recipient' : (!activateToken ? 'Activate Token' : 'Activate URI')} required.`);
+  send: (recipient, subject, body) => new Promise((resolve, reject) => {
+    if(!recipient || !subject || !body) {
+      const error = new Error(`Recipient, subject and body required.`);
       error.name = 'ActivateEmailError';
       error.httpStatusCode = 500;
       return reject(error);
@@ -64,9 +64,9 @@ const gmailHelper = {
       const mailOptions = {
         from: process.env.GMAIL_ADDRESS,
         to: recipient,
-        subject: 'OmniPC Server account activation',
+        subject: subject,
         generateTextFromHTML: true,
-        html: createTemplate(recipient, activateToken, activateURI)
+        html: body
       }
       transporter.sendMail(mailOptions, (error, info) => {
         if(error) {
