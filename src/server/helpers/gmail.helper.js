@@ -29,15 +29,6 @@ const getToken = async () => {
   }
 }
 
-const createTemplate = (activationRecipient, activateToken, activationURI) => {
-  return `
-    <h3>Bienvenido a <a href="https://omnipc.ddns.net">OmniPC Sistemas</a></h3>
-    <p>Por favor haga clic en el siguiente enlace para activar su cuenta:</p>
-    <a href="${activationURI}?token=${activateToken}&email=${activationRecipient}&activate=true">Activar cuenta en OmniPC</a>
-    <p>Gracias por su confianza.</p>
-  `;
-}
-
 const gmailHelper = {
   send: (recipient, subject, body) => new Promise((resolve, reject) => {
     if(!recipient || !subject || !body) {
