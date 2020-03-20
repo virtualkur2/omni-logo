@@ -3,7 +3,7 @@ const Logo = require('../models/logo.model');
 const uploadHelper = require('../helpers/file.upload.helper');
 const staticPath = require('../../config').paths.public;
 
-const logoImagePath = path.join(__dirname, staticPath, 'logo');
+const logoImagePath = path.join(__basedir, staticPath, 'logo');
 const acceptedFileTypes = /\.(jpg|jpeg|png|gif|svg|ico|tiff)$/
 const acceptedFiles = acceptedFileTypes.source.substring(acceptedFileTypes.source.indexOf('('), acceptedFileTypes.source.lastIndexOf(')') + 1);
 
@@ -122,3 +122,4 @@ const logoController = {
 }
 
 module.exports = logoController;
+
