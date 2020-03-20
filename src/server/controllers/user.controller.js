@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const gmailHelper = require('../helpers/gmail.helper');
 const config = require('../../config');
+const utils = require('../utils');
 
 const userController = {
   create: (req, res, next) => {
@@ -14,21 +15,8 @@ const userController = {
         error.httpStatusCode = 500;
         return next(error);
       }
-      const tokenExpIn = Math.floor((Date.now() + config.jwt.emailVerifyExpTime)/1000);
-      const activateToken = jwt.sign({_id: user._id, aud: config.jwt.audience, iss: config.jwt.issuer, exp: tokenExpIn,}, config.jwt.VERIFY_EMAIL_SECRET);
-      const activateURI = config.env.ACTIVATE_EMAIL_URI;
-      gmailHelper.sendMail(user.email, activateToken, activateURI)
-        .then(info => {
-          console.info(info);
-          return res.status(201).json({
-            message: `User created successfully.`,
-            user: newUser.getSafeData(),
-          });
-        })
-        .catch(error => {
-          error.httpStatusCode = 500;
-          return next(error);
-        });
+      req.user = newUser.getSafeData();
+      next();
     });
   },
   read: (req, res, next) => {
@@ -115,27 +103,50 @@ const userController = {
     });
   },
   activate: (req, res, next) => {
-    const active = req.query.activate === 'true' ? true : false;
-    User.findByIdAndUpdate(req.auth._id, {$set: {active: active}}, {new: true, useFindAndModify: false}, (error, user) => {
+    const token = utils.getToken(req);
+    if(!token) {
+      // Token not present in request, send API Error message (Do I need send a template instead?)
+      const error = new Error(`No token provided in request, please contact an administrator.`);
+      error.name = 'AuthorizeError';
+      error.httpStatusCode = 403; // Forbidden
+      return next(error);
+    }
+    const email = req.query.email;
+    if(!email) {
+      // Email not present in request, send API Error message (Do I need send a template instead?)
+      const error = new Error(`No email provided in request, please contact an administrator.`);
+      error.name = 'AuthorizeError';
+      error.httpStatusCode = 403; // Forbidden
+      return next(error);
+    }
+    if(!req.query.activate || !(req.query.activate === 'true' || req.query.activate === 'false')) {
+      // Missing action or invalid action in request, send API Error message (Do I need send a template instead?)
+      const error = new Error(`No action provided in request or invalid action, please contact an administrator.`);
+      error.name = 'AuthorizeError';
+      error.httpStatusCode = 403; // Forbidden
+      return next(error);
+    }
+    //check token
+    jwt.verify(token, config.jwt.VERIFY_EMAIL_SECRET, {audience: config.jwt.audience, issuer: config.jwt.issuer, maxAge: config.jwt.emailVerifyExpTime/1000}, (error, decoded) => {
+      //TODO: if token is not valid, display send new token page using Captcha
       if(error) {
-        error.httpStatusCode(500);
+        error.httpStatusCode = 403; // Forbidden
         return next(error);
       }
-      return res.status(201).json({
-        message: `User account for ${user.userName} successfully updated.`,
-        user: user.getSafeData(),
-      });
+      req.auth = decode;
+      next();
     });
-    
   },
-  devRead: (req, res, next) => {
-    User.find({}, (error, results) => {
-      if(error) {
-        error.httpStatusCode = 500;
-        return next(error);
-      }
-      console.info('Development read of documents in Users collection.');
-      return res.status(200).json(results);
+  redirectLogin: (req, res, next) => {
+    if(req.auth) {
+      console.log(`req.auth: ${req.auth}`);
+    }
+    if(req.query && req.query.redirect) {
+      console.log(`req.query.redirect: ${req.query.redirect}`);
+    }
+    const redirectURI = (req.query && req.query.redirect) || config.env.LOGIN_REDIRECT_URI;
+    return res.status(200).json({
+      message: `Redirected to: ${redirectURI}`
     });
   }
 }

@@ -1,4 +1,5 @@
 require('dotenv').config();
+global.__basedir = __dirname;
 const server = require('./server');
 const dbHelper = require('./server/helpers/db.helper');
 const PORT = require('./config').env.PORT;

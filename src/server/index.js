@@ -23,7 +23,7 @@ const server = () => {
   app.use(morgan('combined'));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true}));
-  app.use(express.static(path.join(__dirname, config.paths.public), staticOptions));
+  app.use(express.static(path.join(__basedir, config.paths.public), staticOptions));
   app.use(cookieParser(config.cookie.SECRET));
   app.use(routes(router));
   app.use(notFoundHelper);

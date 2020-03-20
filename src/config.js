@@ -3,7 +3,8 @@ const config = {
     NODE_ENV: process.env.NODE_ENV || 'development',
     PORT: process.env.PORT || 3000,
     BASE_URI: process.env.BASE_URI || '/',
-    ACTIVATE_EMAIL_URI: process.env.ACTIVATE_EMAIL_URI || 'https://omnipc.ddns.net/api/activate',
+    ACTIVATE_EMAIL_URI: process.env.ACTIVATE_EMAIL_URI || 'https://omnipc.ddns.net/api/user/activate',
+    LOGIN_REDIRECT_URI: process.env.LOGIN_REDIRECT_URI || 'https://omnipc.ddns.net/login',
   },
   jwt: {
     SECRET: process.env.JWT_SECRET || '3FDB85062057CBB0110A1B94D2880C535CFD6A8EF6412B7D398F11A743B3B276',
@@ -55,7 +56,7 @@ const config = {
     URI: process.env.MONGO_URI || 'mongodb://localhost:27017/omnipc_db'
   },
   paths: {
-    public: '/public'
+    public: 'public'
   },
   serveStatic: {
     options: {

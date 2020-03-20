@@ -1,6 +1,5 @@
 const path = require('path');
 const authController = require('../../controllers/auth.controller');
-const userController = require('../../controllers/user.controller');
 const baseAPIpath = require('../../../config').env.BASE_URI;
 
 
@@ -9,9 +8,6 @@ const authRoutes = (router) => {
     .post(authController.signin);
   router.route(path.join(baseAPIpath, 'logout'))
     .post(authController.signout);
-  
-  router.route(path.join(baseAPIpath, 'activate'))
-    .get(authController.verifyEmail, userController.activate);
   
   return router;
 }

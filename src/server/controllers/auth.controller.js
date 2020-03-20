@@ -1,18 +1,12 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const config = require('../../config');
-
-const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const utils = require('../utils');
 
 const authController = {
   signin: (req, res, next) => {
     // Find user with data provided in req object
-    const query = {};
-    if(emailRegex.test(req.body.user)) {
-      query.email = req.body.user;
-    } else {
-      query.userName = req.body.user;
-    }
+    const query = utils.userQuery(req);
     User.findOne(query, async (error, user) => {
       if(error) {
         error.httpStatusCode = 500; // Internal Server Error
@@ -59,7 +53,7 @@ const authController = {
     });
   },
   requireSignin: (req, res, next) => {
-    const token = getToken(req);
+    const token = utils.getToken(req);
     if(!token) {
       const error = new Error(`Missing credentials, please do login.`);
       error.name = 'AuthorizeError';
@@ -85,69 +79,8 @@ const authController = {
     }
     next();
   },
-  verifyEmail: (req, res, next) => {
-    const token = getToken(req);
-    // TODO: next lines are very repetitive, please create an Error Class
-    if(!token) {
-      // Token not present in request, send API Error message (Do I need send a template instead?)
-      const error = new Error(`No token provided in request, please contact an administrator.`);
-      error.name = 'AuthorizeError';
-      error.httpStatusCode = 403; // Forbidden
-      return next(error);
-    }
-    const email = req.query.email;
-    if(!email) {
-      // Email not present in request, send API Error message (Do I need send a template instead?)
-      const error = new Error(`No email provided in request, please contact an administrator.`);
-      error.name = 'AuthorizeError';
-      error.httpStatusCode = 403; // Forbidden
-      return next(error);
-    }
-    const activate = req.query.activate;
-    if(!activate || !(activate === 'true' || activate === 'false')) {
-      // Missing action or invalid action in request, send API Error message (Do I need send a template instead?)
-      const error = new Error(`No action provided in request or invalid action, please contact an administrator.`);
-      error.name = 'AuthorizeError';
-      error.httpStatusCode = 403; // Forbidden
-      return next(error);
-    }
-    //check token
-    jwt.verify(token, config.jwt.VERIFY_EMAIL_SECRET, {audience: config.jwt.audience, issuer: config.jwt.issuer, maxAge: config.jwt.emailVerifyExpTime/1000}, (error, decoded) => {
-      //TODO: if token is not valid, display send new token page using Captcha
-      if(error) {
-        error.httpStatusCode = 403; // Forbidden
-        return next(error);
-      }
-      req.auth = decoded;
-      next();
-    });
-  },
-  devRead: (req, res, next) => {
-    if(!req.query.dev || !(req.query.dev === 'true')) {
-      const error = new Error('A parameter is missing, please try again.');
-      error.name = 'AuthorizeError';
-      error.httpStatusCode = 403; // Forbidden
-      return next(error);
-    }
-    next();
-  }
 }
 
-const getToken = (req) => {
-  if(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-    return req.headers.authorization.split(' ')[1];
-  } else if(req.query && req.query.token) {
-    return req.query.token;
-  } else if(req.signedCookies) {
-    let token = undefined;
-    if(req.signedCookies[config.cookie.name]) {
-      token = req.signedCookies[config.cookie.name];
-    }
-    console.log(token);
-    return token;
-  } else {
-    return;
-  }
-}
 
 module.exports = authController;
+
