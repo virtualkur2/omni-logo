@@ -18,11 +18,11 @@ const userRoutes = (router) => {
   router.route(path.join(baseAPIpath, 'user/activate'))
     .get(userController.activate, userController.redirectLogin);
 
-  // router.route(path.join(baseAPIpath, 'user/reactivate'))
+  // router.route(path.join(baseAPIpath, 'user/reset'))
   
   router.route(path.join(baseAPIpath, 'user'))
     .post(userController.create, emailController.sendActivateEmail);
-  //   .get(authController.devRead, userController.devRead)
+    // .get(authController.devRead, userController.devRead)
   
   router.param('userId', userController.userById);
   router.param('userEmail', userController.userByEmail);
