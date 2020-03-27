@@ -49,6 +49,13 @@ const getErrorMessage = (error) => {
 }
 
 getErrorCallee = (error) => {
+  console.log(`Error Name: ${error.name}.`);
+  console.log(error.stack.split("\n"));
+  if(error.name.includes('Mongo')){
+    const caller_line = error.stack.split("\n")[1];
+    const start = caller_line.indexOf("at ");
+    return caller_line.slice(start + 2, caller_line.length);
+  }
   const caller_line = error.stack.split("\n")[4];
   const start = caller_line.indexOf("at ");
   return caller_line.slice(start + 2, caller_line.length);
