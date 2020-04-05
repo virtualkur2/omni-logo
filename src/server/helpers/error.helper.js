@@ -49,16 +49,10 @@ const getErrorMessage = (error) => {
 }
 
 getErrorCallee = (error) => {
-  console.log(`Error Name: ${error.name}.`);
-  console.log(error.stack.split("\n"));
-  if(error.name.includes('Mongo')){
-    const caller_line = error.stack.split("\n")[1];
-    const start = caller_line.indexOf("at ");
-    return caller_line.slice(start + 2, caller_line.length);
-  }
-  const caller_line = error.stack.split("\n")[4];
-  const start = caller_line.indexOf("at ");
-  return caller_line.slice(start + 2, caller_line.length);
+  const errorStack = error.stack.split("\n");
+  const caller_line = errorStack.length > 1 ? errorStack[1] : errorStack[0];
+  const errorCaller = ~caller_line.indexOf("at ") ? caller_line.slice(caller_line.indexOf("at ") + 2, caller_line.length): caller_line;
+  return errorCaller;
 }
 
 module.exports = errorHelper;
