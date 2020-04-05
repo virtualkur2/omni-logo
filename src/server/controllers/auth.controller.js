@@ -7,6 +7,11 @@ const authController = {
   signin: (req, res, next) => {
     // Find user with data provided in req object
     const query = utils.userQuery(req);
+    if(!query) {
+      const error = new ReferenceError(`Email or userName not provided, instead get: ${query}`);
+      error.httpStatusCode = 404;
+      return next(error);
+    }
     User.findOne(query, async (error, user) => {
       if(error) {
         error.httpStatusCode = 500; // Internal Server Error

@@ -2,11 +2,11 @@ const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+")
 
 const utils = {
   userQuery: (req) => {
+    if(!req.body || (!req.body.email && !req.body.user)) return;
     const query = {};
-    if (emailRegex.test(req.body.user)) {
-      query.email = req.body.user;
-    }
-    else {
+    if(req.body.email) {
+      query.email = req.body.email;
+    } else {
       query.userName = req.body.user;
     }
     return query;
