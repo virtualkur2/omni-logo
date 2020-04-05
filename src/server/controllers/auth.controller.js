@@ -18,7 +18,7 @@ const authController = {
         return next(error);
       }
       if(!user) {
-        let error = new Error(`User account for '${req.body.user}', was not found.`);
+        let error = new Error(`User account for '${query.email ? query.email : query.userName}', was not found.`);
         error.name = 'NotFoundError';
         error.httpStatusCode = 404; // Not found
         return next(error);
