@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const config = require('../../config');
 const gmailHelper = require('../helpers/gmail.helper');
 const utils = require('../utils');
@@ -10,10 +11,10 @@ const emailController = {
       return next(error);
     }
     const tokenExpIn = Math.floor((Date.now() + config.jwt.emailVerifyExpTime)/1000);
-    const token = jwt.sign({_id: user._id, aud: config.jwt.audience, iss: config.jwt.issuer, exp: tokenExpIn,}, config.jwt.VERIFY_EMAIL_SECRET);
+    const token = jwt.sign({_id: req.user._id, aud: config.jwt.audience, iss: config.jwt.issuer, exp: tokenExpIn,}, config.jwt.VERIFY_EMAIL_SECRET);
     const activateURI = config.env.ACTIVATE_EMAIL_URI;
     const redirectURI = config.env.LOGIN_REDIRECT_URI;
-    const template = utils.activationTemplate(user.email, token, activateURI, redirectURI);
+    const template = utils.activationTemplate(req.user.email, token, activateURI, redirectURI);
     const subject = 'OmniPC Server account activation';
     gmailHelper.send(req.user.email, subject, template)
         .then(info => {

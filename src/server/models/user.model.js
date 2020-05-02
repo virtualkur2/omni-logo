@@ -43,6 +43,10 @@ const UserSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
+  },
+  subscribe: {
+    type: Boolean,
+    default: false
   }
 }, {timestamps: {createdAt: 'created', updatedAt: 'updated'}});
 

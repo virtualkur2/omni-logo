@@ -4,11 +4,13 @@ const baseAPIpath = require('../../../config').env.BASE_URI;
 
 
 const authRoutes = (router) => {
-  router.route(path.join(baseAPIpath, 'login'))
+  router.route(path.join(baseAPIpath, 'auth/login'))
     .post(authController.signin);
-  router.route(path.join(baseAPIpath, 'logout'))
+  router.route(path.join(baseAPIpath, 'auth/logout'))
     .post(authController.signout);
   
+  router.route(path.join(baseAPIpath, 'auth/activate'))
+    .get(authController.activate)
   return router;
 }
 

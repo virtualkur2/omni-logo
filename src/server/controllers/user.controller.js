@@ -102,53 +102,6 @@ const userController = {
       next();
     });
   },
-  activate: (req, res, next) => {
-    const token = utils.getToken(req);
-    if(!token) {
-      // Token not present in request, send API Error message (Do I need send a template instead?)
-      const error = new Error(`No token provided in request, please contact an administrator.`);
-      error.name = 'AuthorizeError';
-      error.httpStatusCode = 403; // Forbidden
-      return next(error);
-    }
-    const email = req.query.email;
-    if(!email) {
-      // Email not present in request, send API Error message (Do I need send a template instead?)
-      const error = new Error(`No email provided in request, please contact an administrator.`);
-      error.name = 'AuthorizeError';
-      error.httpStatusCode = 403; // Forbidden
-      return next(error);
-    }
-    if(!req.query.activate || !(req.query.activate === 'true' || req.query.activate === 'false')) {
-      // Missing action or invalid action in request, send API Error message (Do I need send a template instead?)
-      const error = new Error(`No action provided in request or invalid action, please contact an administrator.`);
-      error.name = 'AuthorizeError';
-      error.httpStatusCode = 403; // Forbidden
-      return next(error);
-    }
-    //check token
-    jwt.verify(token, config.jwt.VERIFY_EMAIL_SECRET, {audience: config.jwt.audience, issuer: config.jwt.issuer, maxAge: config.jwt.emailVerifyExpTime/1000}, (error, decoded) => {
-      //TODO: if token is not valid, display send new token page using Captcha
-      if(error) {
-        error.httpStatusCode = 403; // Forbidden
-        return next(error);
-      }
-      req.auth = decode;
-      next();
-    });
-  },
-  redirectLogin: (req, res, next) => {
-    if(req.auth) {
-      console.log(`req.auth: ${req.auth}`);
-    }
-    if(req.query && req.query.redirect) {
-      console.log(`req.query.redirect: ${req.query.redirect}`);
-    }
-    const redirectURI = (req.query && req.query.redirect) || config.env.LOGIN_REDIRECT_URI;
-    return res.status(200).json({
-      message: `Redirected to: ${redirectURI}`
-    });
-  }
 }
 
 module.exports = userController;

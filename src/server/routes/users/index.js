@@ -15,13 +15,8 @@ const userRoutes = (router) => {
     .put(authController.requireSignin, authController.hasAuthorization, userController.update)
     .delete(authController.requireSignin, authController.hasAuthorization, userController.remove);
 
-  router.route(path.join(baseAPIpath, 'user/activate'))
-    .get(userController.activate, userController.redirectLogin);
-
-  // router.route(path.join(baseAPIpath, 'user/reset'))
-  
   router.route(path.join(baseAPIpath, 'user'))
-    .post(userController.create, emailController.sendActivateEmail);
+    .post(authController.validateCaptcha, userController.create, emailController.sendActivateEmail);
     // .get(authController.devRead, userController.devRead)
   
   router.param('userId', userController.userById);
