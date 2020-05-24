@@ -4,12 +4,12 @@ const path = require('path');
 const fs = require('fs');
 
 const fileNameLength = 32;
-const maxFileSize = 10 * 1000 * 1000; // this is for bytes
+const maxFileSize = 2 ** 20; // this is for 1 Megabyte (1048576 bytes)
 const limits = {
   fileSize: maxFileSize
 }
 
-const randomFileName = (length) => {
+const randomFileName = length => {
   return [...Array(length)].map((element) => (~~(Math.random()*36)).toString(36)).join('');
 }
 
@@ -18,9 +18,9 @@ const fileUploadHelper = {
     const storage = multer.diskStorage({
       destination: filePath,
       filename: (req, file, cb) => {
-        let extension = path.extname(file.originalname);
+        let ext = path.extname(file.originalname);
         ext = ext.length > 2 ? ext : `.${mime.extension(file.mimetype)}`;
-        let filename = `${randomFileName(fileNameLength)}.${extension}`;
+        let filename = `${randomFileName(fileNameLength)}${ext}`;
         cb(null, filename);
       }
     });
