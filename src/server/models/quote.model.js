@@ -8,6 +8,18 @@ const QuoteSchema = new mongoose.Schema({
   author: {
     type: String,
     required: true
+  },
+  approved: {
+    type: Boolean,
+    default: false
+  },
+  pending: {
+    type: Boolean,
+    default: true
+  },
+  rejected: {
+    type: Boolean,
+    default: false
   }
 }, {timestamps: {createdAt: 'created', updatedAt: 'updated'}});
 
@@ -25,16 +37,16 @@ QuoteSchema.statics = {
     const authorAgregate = [
       {$match: { author: author}},
       {$group: 
-        {_id: '$author', quotes:{ $push: '$quote'}}
+        {_id: '$author', quotes:{ $push: {_id: '$_id', quote: '$quote', created: '$created', approved: '$approved', pending: '$pending', rejected: '$rejected'}}}
       }
     ];
     this.aggregate(authorAgregate).exec(cb);
   },
   groupByAuthor: function(cb) {
     const groupAggregate = [
-      {$project: {author: 1, quote: 1, _id:0}},
+      {$project: {updated: 0}},
       {$group: 
-        {_id: '$author', quotes:{ $push: '$quote'}}
+        {_id: '$author', quotes:{ $push: {_id: '$_id', quote: '$quote', created: '$created', approved: '$approved', pending: '$pending', rejected: '$rejected'}}}
       }
     ];
     this.aggregate(groupAggregate).exec(cb);
