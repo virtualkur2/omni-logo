@@ -5,17 +5,17 @@ const emailController = require('../../controllers/email.controller');
 const baseAPIpath = require('../../../config').env.BASE_URI;
 
 const userRoutes = (router) => {
-  router.route(path.join(baseAPIpath,'user/id/:userId'))
+  router.route(path.join(baseAPIpath,'users/id/:userId'))
     .get(authController.requireSignin, authController.hasAuthorization, userController.read)
     .put(authController.requireSignin, authController.hasAuthorization, userController.update)
     .delete(authController.requireSignin, authController.hasAuthorization, userController.remove);
 
-  router.route(path.join(baseAPIpath,'user/email/:userEmail'))
+  router.route(path.join(baseAPIpath,'users/email/:userEmail'))
     .get(authController.requireSignin, authController.hasAuthorization, userController.read)
     .put(authController.requireSignin, authController.hasAuthorization, userController.update)
     .delete(authController.requireSignin, authController.hasAuthorization, userController.remove);
 
-  router.route(path.join(baseAPIpath, 'user'))
+  router.route(path.join(baseAPIpath, 'users'))
     .post(authController.validateCaptcha, userController.create, emailController.sendActivateEmail);
     // .get(authController.devRead, userController.devRead)
   
