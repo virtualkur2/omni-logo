@@ -12,14 +12,6 @@ const QuoteSchema = new mongoose.Schema({
   approved: {
     type: Boolean,
     default: false
-  },
-  pending: {
-    type: Boolean,
-    default: true
-  },
-  rejected: {
-    type: Boolean,
-    default: false
   }
 }, {timestamps: {createdAt: 'created', updatedAt: 'updated'}});
 

@@ -17,7 +17,7 @@ dbHelper.connect()
   try {
     const quotesQuantity = await Quote.estimatedDocumentCount().exec();
     if(!quotesQuantity) {
-      console.info('Start scraping...');
+      console.info('Start scrapping...');
       return exec(command, async (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);
@@ -33,6 +33,21 @@ dbHelper.connect()
 
           const response = JSON.parse(stdout);
           const quotes = response.quotes;
+
+          //add DavidDPG personal quotes:
+          quotes.push({
+            quote: 'Piensas que el mundo de la programación está lleno de mentes brillantes, hasta que te decides a prestar ayuda en StackOverflow.',
+            author: 'DavidDPG'
+          });
+          quotes.push({
+            quote: 'Me he visto en etrevistas de trabajo en las que me ofrecen empezar con un sueldo bajo que se incrementaría más tarde; en estos casos respondo muy respetuosamente: "Llámenme ustedes cuando sea más tarde".',
+            author: 'DavidDPG'
+          });
+
+          // change status of all quotes to approved
+          for(let quote of quotes) {
+            quote.approved = true;
+          }
           const insertedQuotes = await Quote.insertMany(quotes);
           const count = await Quote.estimatedDocumentCount().exec();
               
@@ -51,7 +66,7 @@ dbHelper.connect()
       return self.indexOf(author) === index;
     });
     console.log(authors);
-    const wikipediaURLsByAuthors = [];
+    // const wikipediaURLsByAuthors = [];
     console.log(`Number of estimated documents in collection: ${quotesQuantity}.`);
     console.log(`Number of differents authors: ${authors.length}.`);
     const connectionState = dbHelper.getConnectionState();

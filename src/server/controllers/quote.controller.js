@@ -107,7 +107,7 @@ const quoteController = {
     let sortFunction;
     if(req.query && req.query.sort) {
       if(req.query.sort === '1' ||
-         req.query.sort === '+1' || /*Sugerencia de Asier el tocapelotas:*/
+         req.query.sort === '+1' || /*Sugerencia de Asier el tocapelotas*/
          req.query.sort === 'asc' ||
          req.query.sort === 'Asc' || 
          req.query.sort === 'ASC') {
