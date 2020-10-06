@@ -1,5 +1,6 @@
 const https = require('https');
 const querystring = require('querystring');
+const config = require('../../config');
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -82,8 +83,13 @@ const utils = {
       request.write(postMessage);
       request.end();
     });
+  },
+  isFunction: functionToCheck => {
+    return (
+      functionToCheck &&
+      {}.toString.call(functionToCheck) === "[object Function]"
+    );
   }
-  
 }
 
 module.exports = utils;

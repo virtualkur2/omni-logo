@@ -109,3 +109,6 @@ dist
 # Public folder
 /src/public/**
 !/src/public/.gitkeep
+
+# Tokens
+src/server/helpers/tokens.json
