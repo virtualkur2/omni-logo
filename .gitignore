@@ -110,5 +110,9 @@ dist
 /src/public/**
 !/src/public/.gitkeep
 
-# Tokens
+# Tokens and credentials
 src/server/helpers/tokens.json
+Omni-Server-f2533417da3f.json
+
+# Temporal test folder
+test/temporal/**
