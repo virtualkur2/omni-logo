@@ -28,10 +28,20 @@ const errorHelper = (error, req, res, next) => {
 
 const getErrorName = (error) => {
   if (error.errors && Array.isArray(error.errors) && error.errors.length) {
-    // first error name only
     return error.errors[0].name;
   }
-  return error.name;
+  let name = error.name;
+
+  switch (error.name) {
+    case 'MongoError':
+      if (error.code && (error.code === 11000 || error.code === 11001)) {
+        name = 'DuplicateError';
+      }
+      break;
+    default:
+      break;
+  }
+  return name;
 };
 
 const getErrorMessage = (error) => {

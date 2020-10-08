@@ -1,43 +1,5 @@
 const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
-const fs = require('fs');
-
-const tokensPath = './tokens.json';
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GMAIL_OAUTH_CLIENT_ID,
-  process.env.GMAIL_OAUTH_CLIENT_SECRET,
-  process.env.GMAIL_OAUTH_REDIRECT_URL,
-);
-
-const onTokens = (tokens) => {
-  if (tokens.refresh_token) {
-    fs.writeFile(tokensPath, tokens, (error) => {
-      if (error) {
-        console.log('An error ocurred saving refresh token:');
-        console.error(error.message);
-        throw error;
-      }
-      console.log('Tokens file updated');
-    });
-  }
-};
-
-oauth2Client.on('tokens', onTokens);
-
-oauth2Client.setCredentials({
-  refresh_token: require(tokensPath).refresh_token,
-});
-
-const getToken = async () => {
-  try {
-    const { token, data } = await oauth2Client.getAccessToken();
-    const expiry_date = data.expery_date;
-    return { token, expiry_date };
-  } catch (error) {
-    console.error(error.message);
-    throw error;
-  }
-};
+const getToken = require('./gmail.getToken.helper');
 
 const gmailHelper = {
   send: (recipient, subject, body) =>
@@ -49,7 +11,7 @@ const gmailHelper = {
         return reject(error);
       }
       getToken()
-        .then((result) => {
+        .then(({ token, expires, refresh }) => {
           const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
@@ -59,9 +21,9 @@ const gmailHelper = {
               user: process.env.GMAIL_ADDRESS,
               clientId: process.env.GMAIL_OAUTH_CLIENT_ID,
               clientSecret: process.env.GMAIL_OAUTH_CLIENT_SECRET,
-              refreshToken: process.env.GMAIL_OAUTH_REFRESH_TOKEN,
-              accessToken: result.token,
-              expires: result.expiry_date,
+              accessToken: token,
+              refreshToken: refresh,
+              expires: expires,
             },
           });
           const mailOptions = {
@@ -76,7 +38,7 @@ const gmailHelper = {
               console.error(error.message);
               return reject(error);
             }
-            const closed = transporter.close();
+            transporter.close();
             resolve(info);
           });
         })
@@ -88,3 +50,17 @@ const gmailHelper = {
 };
 
 module.exports = gmailHelper;
+
+// DELIMITER $$
+// CREATE TRIGGER checksalary_bi BEFORE INSERT ON mytable FOR EACH ROW
+// BEGIN
+//     DECLARE dummy,notallow INT;
+//     SET notallow = 0;
+//     IF NEW.salary < 0 THEN
+//         SET notallow = 1;
+//     END IF;
+//     IF notallow = 1 THEN
+//         SELECT CONCAT('Cannot Insert This Because Salary ',NEW.salary,' is Invalid')
+//         INTO dummy FROM information_schema.tables;
+//     END IF;
+// END; $$

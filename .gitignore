@@ -115,4 +115,4 @@ src/server/helpers/tokens.json
 Omni-Server-f2533417da3f.json
 
 # Temporal test folder
-test/temporal/**
+test/temporal/
