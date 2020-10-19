@@ -1,9 +1,5 @@
-const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const Application = require('../models/application.model');
-const gmailHelper = require('../helpers/gmail.helper');
-const config = require('../../config');
-const utils = require('../utils');
 
 const userController = {
   create: (req, res, next) => {

@@ -2,7 +2,7 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
 
-const tokensPath = path.join(__dirname, './tokens.json');
+const tokensPath = path.join(__basedir, '../tokens.json');
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GMAIL_OAUTH_CLIENT_ID,

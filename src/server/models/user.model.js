@@ -135,5 +135,3 @@ UserSchema.pre('validate', async function(next) {
 });
 
 module.exports = mongoose.model('User', UserSchema);
-// Ofrecemos atención remota en línea por personal altamente capacitado, con absoluta seguridad.
-// Permita que la experiencia acceda a su escritorio y le ayude a resolver de forma profesional todas las incidencias desde la comodidad de su hogar.
