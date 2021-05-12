@@ -34,7 +34,7 @@
     "mime": "^2.4.6",
     "mongoose": "^5.10.7",
     "multer": "^1.4.2",
-    "nodemailer": "^6.4.12"
+    "nodemailer": "^6.4.16"
   },
   "devDependencies": {
     "chokidar": "^3.4.2",
