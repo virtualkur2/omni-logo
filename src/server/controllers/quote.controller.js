@@ -42,7 +42,7 @@ const quoteController = {
             return next(error);
           }
           return res.status(200).json({
-            message: 'All quotes',
+            message: quotes.length === documentCount ? 'All quotes': 'Paginated results',
             data: quotes,
             retrieved: quotes.length,
             total: documentCount,
