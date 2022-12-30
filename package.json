@@ -41,7 +41,7 @@
     "console-stamp": "^3.0.0-rc4.2",
     "dotenv": "^8.2.0",
     "jest": "^26.4.2",
-    "mocha": "^7.2.0",
+    "mocha": "^10.2.0",
     "morgan": "^1.10.0",
     "node-mocks-http": "^1.9.0",
     "nodemon": "^2.0.4"
